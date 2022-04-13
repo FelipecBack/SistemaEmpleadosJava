@@ -5,18 +5,31 @@
 package sistema.empleadosGUI;
 import sistema.empleadosDAL.conexion;
 import java.sql.ResultSet;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import sistema.empleadosBL.empleadosBL;
 /**
  *
  * @author God
  */
 public class frmEmpleados extends javax.swing.JFrame {
+    DefaultTableModel modelo;
 
     /**
      * Creates new form frmEmpleados
      */
     public frmEmpleados() {
         initComponents();
+        
+       String[] titulos = {"ID","Nombre","Correo"};
+       
+       modelo = new DefaultTableModel(null,titulos);
+       tblEmpleados.setModel(modelo);
+       
+       this.mostrarDatos();
+       this.limpiar();
+        
+        
     }
 
     /**
@@ -55,8 +68,14 @@ public class frmEmpleados extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblEmpleados.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblEmpleadosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblEmpleados);
 
+        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sistema/recursos/agregar-usuario.png"))); // NOI18N
         btnAgregar.setText("Agregar");
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -64,11 +83,31 @@ public class frmEmpleados extends javax.swing.JFrame {
             }
         });
 
+        btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sistema/recursos/editar.png"))); // NOI18N
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
+        btnBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sistema/recursos/eliminar.png"))); // NOI18N
         btnBorrar.setText("Borrar");
+        btnBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrarActionPerformed(evt);
+            }
+        });
 
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sistema/recursos/cancelar.png"))); // NOI18N
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        txtID.setEditable(false);
 
         txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -87,33 +126,34 @@ public class frmEmpleados extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAgregar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnEditar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnBorrar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnCancelar))
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1)
-                            .addComponent(txtNombre)
-                            .addComponent(txtCorreo)
-                            .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel2)
+                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)
+                            .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(btnAgregar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(28, 28, 28)
+                                .addComponent(btnBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnCancelar)))
+                        .addGap(24, 24, 24))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(8, Short.MAX_VALUE)
+                .addGap(12, 12, 12)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -123,17 +163,17 @@ public class frmEmpleados extends javax.swing.JFrame {
                 .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
                     .addComponent(btnEditar)
                     .addComponent(btnBorrar)
                     .addComponent(btnCancelar))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
@@ -143,6 +183,8 @@ public class frmEmpleados extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreActionPerformed
 
+    
+    
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
           conexion objConexion = new conexion();
           
@@ -152,7 +194,82 @@ public class frmEmpleados extends javax.swing.JFrame {
                   + "VALUES (null, '%s', '%s')",oEmpleados.getNombre(),oEmpleados.getCorreo());
           
           objConexion.ejecutarSentenciaSQL(strSentenciaInsert);
-          try {
+          
+          this.mostrarDatos();
+          this.limpiar();
+          
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void tblEmpleadosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEmpleadosMouseClicked
+        // TODO add your handling code here:
+        
+        if (evt.getClickCount() == 1) {
+            
+            JTable receptor = (JTable)evt.getSource();
+            
+            txtID.setText( receptor.getModel().getValueAt(receptor.getSelectedRow(),0).toString() );
+            txtNombre.setText( receptor.getModel().getValueAt(receptor.getSelectedRow(),1).toString() );
+            txtCorreo.setText( receptor.getModel().getValueAt(receptor.getSelectedRow(),2).toString() );
+        }
+        
+        btnAgregar.setEnabled(false);
+        btnEditar.setEnabled(true);
+        btnBorrar.setEnabled(true);
+        
+        
+    }//GEN-LAST:event_tblEmpleadosMouseClicked
+
+    private void btnBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrarActionPerformed
+        // TODO add your handling code here:
+        
+          conexion objConexion = new conexion();
+          
+          empleadosBL oEmpleados = recuperarDatosGUI();
+          
+          String strSentenciaInsert = String.format("DELETE FROM Empleados WHERE ID =%d",oEmpleados.getID());
+          
+          objConexion.ejecutarSentenciaSQL(strSentenciaInsert);
+          
+          this.mostrarDatos();
+          this.limpiar();
+        
+    }//GEN-LAST:event_btnBorrarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        // TODO add your handling code here:
+          conexion objConexion = new conexion();
+          
+          empleadosBL oEmpleados = recuperarDatosGUI();
+          
+          String strSentenciaInsert = String.format("UPDATE Empleados SET Nombre ='%s', "
+                + "Correo = '%s' WHERE ID =%d",oEmpleados.getNombre(),oEmpleados.getCorreo(),oEmpleados.getID());
+          
+          objConexion.ejecutarSentenciaSQL(strSentenciaInsert);
+          
+          this.mostrarDatos();
+          this.limpiar();
+         
+        
+        
+        
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        // TODO add your handling code here:
+        
+        this.limpiar();
+        
+    }//GEN-LAST:event_btnCancelarActionPerformed
+     
+    public void mostrarDatos(){
+        
+        while(modelo.getRowCount()>0){
+            modelo.removeRow(0);
+        }
+        
+        conexion objConexion = new conexion();
+        
+        try {
               ResultSet resultado = objConexion.consultarRegistros("SELECT * FROM Empleados");
               
               while (resultado.next()) {
@@ -161,15 +278,19 @@ public class frmEmpleados extends javax.swing.JFrame {
                   System.out.println( resultado.getString("Nombre"));
                   System.out.println( resultado.getString("Correo"));
                   
-              }
-          } catch (Exception e) {
+                  Object[] oUsuario = { resultado.getString("ID"),resultado.getString("Nombre"),resultado.getString("Correo") };
+                  modelo.addRow(oUsuario);
+                }
+              
+            }catch (Exception e) {
               System.out.println(e);
-          }
-              
-              
-              
-    }//GEN-LAST:event_btnAgregarActionPerformed
-     public empleadosBL recuperarDatosGUI(){
+            }       
+        
+
+    }
+    
+    
+    public empleadosBL recuperarDatosGUI(){
          empleadosBL oEmpleados = new empleadosBL();
          
          int ID = (txtID.getText().isEmpty())?0: Integer.parseInt(txtID.getText());
@@ -179,7 +300,18 @@ public class frmEmpleados extends javax.swing.JFrame {
          oEmpleados.setCorreo(txtCorreo.getText());
          
          return oEmpleados;
-     } 
+    } 
+    
+    public void limpiar(){
+        txtID.setText("");
+        txtNombre.setText("");
+        txtCorreo.setText("");
+        
+        btnAgregar.setEnabled(true);
+        btnEditar.setEnabled(false);
+        btnBorrar.setEnabled(false);
+        
+    }
         
     /**
      * @param args the command line arguments
